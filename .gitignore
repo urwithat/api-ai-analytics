@@ -1,0 +1,9 @@
+node_modules/
+dist/
+npm-debug.log
+.project
+logs
+coverage
+jsconfig.json
+.vscode
+debug.log
