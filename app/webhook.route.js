@@ -22,7 +22,11 @@ function getWebhook(req, res) {
     var productName = req.body.result.parameters["productName"];
     logger.info("productName :: " + productName);
     if(productName !== undefined && productName !== "") {
-        var product = _.findWhere(products, { name: productName });
+        var product = _.find(products, function(data, i) {
+            if(data.name.toLowerCase().indexOf(productName.toLowerCase()) !== -1) {
+                return data;
+            }
+        });
         if(product) {
             response = product.description;
             logger.info("Product :" + productName + " found.");
