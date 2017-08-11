@@ -18,7 +18,8 @@ function init(router) {
 
 function getWebhook(req, res) {
     var response = "";
-    var params = {};
+    // Universal Analytics
+    var visitor = ua("UA-104398692-1", req.body.sessionId);
     var productName = req.body.result.parameters["productName"];
     logger.info("productName :: " + productName);
     if(productName !== undefined && productName !== "") {
@@ -29,38 +30,17 @@ function getWebhook(req, res) {
         });
         if(product) {
             response = product.description;
-            params = {
-                ec: "Get Products",
-                ea: response,
-                el: "ProductName",
-                ev: productName
-            }
+            visitor.event("Product Found", response).send();
             logger.info("Product :" + productName + " found.");
         } else {
             response = "Could not find product '" + productName + "'";
-            params = {
-                ec: "Get Products",
-                ea: response,
-                el: "ProductName",
-                ev: productName
-            }
+            visitor.event("Product Not Found", response).send();
             logger.info("Could not find product '" + productName + "'");
         }
     } else {
         response = "Product Name not shared";
-        params = {
-            ec: "Get Products",
-            ea: response,
-            el: "ProductName",
-            ev: productName
-        }
+        visitor.event("Product Name Not Found", response).send();
     }
-
-    // Universal Analytics
-    var visitor = ua('UA-104398692-1');
-    
-    visitor.event(params).send();
-
     res.setHeader("Content-Type", "application/json");
     res.send(JSON.stringify({ 'speech': response, 'displayText': response }));
 };
