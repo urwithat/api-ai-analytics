@@ -30,16 +30,16 @@ function getWebhook(req, res) {
         });
         if(product) {
             response = product.description;
-            visitor.event("Product Found", response).send();
-            logger.info("Product :" + productName + " found.");
+            visitor.event("Product '" + product.name + "' Found", response).send();
+            logger.info("Product :" + product.name + " - Found.");
         } else {
-            response = "Could not find product '" + productName + "'";
-            visitor.event("Product Not Found", response).send();
-            logger.info("Could not find product '" + productName + "'");
+            response = "Could not find product '" + product.name + "'";
+            visitor.event("Product '" + product.name + "' - Not Found", response).send();
+            logger.info("Could not find product '" + product.name + "'");
         }
     } else {
         response = "Product Name not shared";
-        visitor.event("Product Name Not Found", response).send();
+        visitor.event("Product Name Not Received", response).send();
     }
     res.setHeader("Content-Type", "application/json");
     res.send(JSON.stringify({ 'speech': response, 'displayText': response }));
