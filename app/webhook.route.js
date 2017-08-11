@@ -7,10 +7,9 @@ var Promise = require("bluebird");
 var path = require('path');
 var fs = require("fs");
 var _ = require('underscore');
+var ua = require('universal-analytics');
 
 // Creating the object to be exported.
-// http://localhost:9002/v1/orchestration/apis/webhook
-// http://pg-orchestration.azurewebsites.net/v1/orchestration/apis/webhook
 function init(router) {
     router.route('/webhook').post(getWebhook);
     router.route('/logs').get(getLogs);
@@ -19,6 +18,7 @@ function init(router) {
 
 function getWebhook(req, res) {
     var response = "";
+    var params = {};
     var productName = req.body.result.parameters["productName"];
     logger.info("productName :: " + productName);
     if(productName !== undefined && productName !== "") {
@@ -29,14 +29,38 @@ function getWebhook(req, res) {
         });
         if(product) {
             response = product.description;
+            params = {
+                ec: "Get Products",
+                ea: response,
+                el: "ProductName",
+                ev: productName
+            }
             logger.info("Product :" + productName + " found.");
         } else {
             response = "Could not find product '" + productName + "'";
+            params = {
+                ec: "Get Products",
+                ea: response,
+                el: "ProductName",
+                ev: productName
+            }
             logger.info("Could not find product '" + productName + "'");
         }
     } else {
         response = "Product Name not shared";
+        params = {
+            ec: "Get Products",
+            ea: response,
+            el: "ProductName",
+            ev: productName
+        }
     }
+
+    // Universal Analytics
+    var visitor = ua('UA-104398692-1');
+    
+    visitor.event(params).send();
+
     res.setHeader("Content-Type", "application/json");
     res.send(JSON.stringify({ 'speech': response, 'displayText': response }));
 };

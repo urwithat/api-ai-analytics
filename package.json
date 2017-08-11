@@ -15,7 +15,7 @@
     "morgan": "~1.8.0",
     "winston": "~2.3.1",
     "underscore": "~1.8.3",
-    "request": "~2.81.0"
+    "universal-analytics": "~0.4.15" 
   },
   "author": "Atif.Siddiqui@mindtree.com",
   "license": "ISC"
