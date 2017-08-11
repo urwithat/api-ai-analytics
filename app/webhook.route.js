@@ -33,9 +33,9 @@ function getWebhook(req, res) {
             visitor.event("Product '" + product.name + "' Found", response).send();
             logger.info("Product :" + product.name + " - Found.");
         } else {
-            response = "Could not find product '" + product.name + "'";
-            visitor.event("Product '" + product.name + "' - Not Found", response).send();
-            logger.info("Could not find product '" + product.name + "'");
+            response = "Could not find product '" + productName + "'";
+            visitor.event("Product '" + productName + "' - Not Found", response).send();
+            logger.info("Could not find product '" + productName + "'");
         }
     } else {
         response = "Product Name not shared";
