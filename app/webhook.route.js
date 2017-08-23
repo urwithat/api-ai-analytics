@@ -21,6 +21,8 @@ function getWebhook(req, res) {
     // Universal Analytics
     var visitor = ua("UA-104398692-1", req.body.sessionId);
     var productName = req.body.result.parameters["productName"];
+    var resolvedQuery = req.body.result.resolvedQuery;
+
     logger.info("productName :: " + productName);
     if(productName !== undefined && productName !== "") {
         var product = _.find(products, function(data, i) {
@@ -31,16 +33,21 @@ function getWebhook(req, res) {
         if(product) {
             response = product.description;
             //visitor.event("Product '" + product.name + "' Found", response).send();
-            visitor.event("Product '" + product.name + "' Found", response, "Atif", 42).send();
+            visitor.event("Product", resolvedQuery, "Success", 101).send();
+            visitor.event(productName, resolvedQuery, "Success", 100).send();
             logger.info("Product :" + product.name + " - Found.");
         } else {
             response = "Could not find product '" + productName + "'";
-            visitor.event("Product '" + productName + "' - Not Found", response).send();
+            //visitor.event("Product '" + productName + "' - Not Found", response).send();
+            visitor.event("Product", resolvedQuery, "Fail", 101).send();
+            visitor.event(productName, resolvedQuery, "Fail", 100).send();
             logger.info("Could not find product '" + productName + "'");
         }
     } else {
         response = "Product Name not shared";
-        visitor.event("Product Name Not Received", response).send();
+        //visitor.event("Product Name Not Received", response).send();
+        visitor.event("Product", resolvedQuery, "Fail", 101).send();
+        visitor.event(productName, resolvedQuery, "Fail", 100).send();
     }
     res.setHeader("Content-Type", "application/json");
     res.send(JSON.stringify({ 'speech': response, 'displayText': response }));
