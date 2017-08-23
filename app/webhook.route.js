@@ -30,7 +30,8 @@ function getWebhook(req, res) {
         });
         if(product) {
             response = product.description;
-            visitor.event("Product '" + product.name + "' Found", response).send();
+            //visitor.event("Product '" + product.name + "' Found", response).send();
+            visitor.event("Product '" + product.name + "' Found", response, "Atif", 42).send();
             logger.info("Product :" + product.name + " - Found.");
         } else {
             response = "Could not find product '" + productName + "'";
